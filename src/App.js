@@ -73,7 +73,7 @@ const App = (props) => (
                 <Dropdown
                     options={countries.map(c => ({value: c.code, label: c.text}))}
                     onChange={e => console.log(e)}
-                    value={countries[1]}
+                    value={{value: countries[1].code, label: countries[1].text}}
                     placeholder="Select an option"
                 />
             </Example>

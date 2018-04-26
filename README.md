@@ -77,8 +77,9 @@ react-select
     * animated components
     * customizable option grouping
     * many, many more customizable aspects
+    * customization seems complicated
 * documentation:
-    * generally excellent and extensive
+    * very extensive
     * occasionally unclear or confusing
 * notes:
 

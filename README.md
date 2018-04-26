@@ -18,9 +18,11 @@ yarn analyze
 
 react-dropdown
 ---------------
-* size:
+* site:
     * http://fraserxu.me/react-dropdown/
     * https://github.com/fraserxu/react-dropdown
+* size:
+    * ~9k
 * a11y:
     * seemingly not good
     * not focusable / keyboard navigable

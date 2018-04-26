@@ -11,7 +11,7 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 // react-select
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 
 import Flag from 'react-country-flag';
 
@@ -81,9 +81,11 @@ const App = (props) => (
                 <Select
                     options={countries}
                     components={{
-                        Option: ({innerProps, isDisabled, data}) =>
-                            <div {...innerProps} style={{margin: '20px 0'}}>
-                                <Country code={data.code} text={data.text}/>
+                        Option: props =>
+                            <div style={{margin: '20px 0'}}>
+                                <components.Option {...props}>
+                                    <Country code={props.data.code} text={props.data.text}/>
+                                </components.Option>
                             </div>
                     }}
                 />

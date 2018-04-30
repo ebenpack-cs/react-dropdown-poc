@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Field, reduxForm } from 'redux-form';
 import logo from './logo.svg';
 import './App.css';
 
@@ -34,8 +35,44 @@ const Example = ({title, children}) => (
     </div>
 );
 
+class MyReduxFormifiedSelect extends Component {
+    render ()  {
+        const { input: { value, onChange } } = this.props;
+        // I'm sure this could be made better, but right now, this is getting re-rendered a bunch,
+        // just because app is itself re-rendering a bunch. So right here we're just figuring out
+        // which value has been selected (if any), and setting it explicitly, in order to ensure we're displaying the
+        // correct selected value. FU redux forms.
+        const selectedValue = (countries.find(c => c.code === value) || countries[1]).code;
+        return <ReactResponsiveSelect
+            name="react-responsive-select"
+            options={
+                countries.map(country => ({
+                    value: country.code,
+                    text: country.text,
+                    markup: <Country {...country} />
+                }))
+            }
+            onSubmit={() => {
+                console.log("Handle form submit here")
+            }}
+            customLabelRenderer={({text, value}) =>
+                // This customizes the selected label. If this wasn't here, we wouldn't see the flag on the select
+                text && value &&
+                    <Country code={value} text={text}/>
+            }
+            caretIcon={caretIcon}
+            prefix=""
+            selectedValue={selectedValue}
+            onChange={args => {
+                // This wires up the select into redux forms
+                onChange(args.value);
+            }}
+        />
+    }
+}
+
 const countries = [
-    {code: 'US', text: 'America! Fuck yeah!'},
+    {code: 'US', text: 'America! Heck yeah!'},
     {code: 'CA', text: 'Canada, eh?'}
 ];
 
@@ -46,38 +83,22 @@ const App = (props) => (
             <h1 className="App-title">Welcome to React</h1>
         </header>
         <div className="App-intro">
-            <Example title="React Responsive Select">
-                <ReactResponsiveSelect
-                    name="react-responsive-select"
-                    options={
-                        countries.map(country => ({
-                            value: country.code,
-                            text: country.text,
-                            markup: <Country {...country} />
-                        }))
-                    }
-                    onSubmit={() => {
-                        console.log("Handle form submit here")
-                    }}
-                    customLabelRenderer={({text, value}) => text && value && <Country code={value} text={text}/>
-                    }
-                    caretIcon={caretIcon}
-                    prefix=""
-                    selectedValue={countries[1].text}
-                    onChange={(newValue) => {
-                        console.log(newValue)
-                    }}
-                />
-            </Example>
-            <Example title="React Dropdown">
-                <Dropdown
-                    options={countries.map(c => ({value: c.code, label: c.text}))}
-                    onChange={e => console.log(e)}
-                    value={{value: countries[1].code, label: countries[1].text}}
-                    placeholder="Select an option"
-                />
-            </Example>
-            <Example title="React Select">
+            <form>
+                <Example title="React Responsive Select">
+                    <Field
+                        name="ReactResponsiveSelect"
+                        component={MyReduxFormifiedSelect}
+                    />
+                </Example>
+                <Example title="React Dropdown">
+                    <Dropdown
+                        options={countries.map(c => ({value: c.code, label: c.text}))}
+                        onChange={e => console.log(e)}
+                        value={{value: countries[1].code, label: countries[1].text}}
+                        placeholder="Select an option"
+                    />
+                </Example>
+                <Example title="React Select">
                 <Select
                     options={countries}
                     components={{
@@ -90,8 +111,15 @@ const App = (props) => (
                     }}
                 />
             </Example>
+                <button type="submit" onClick={props.handleSubmit}>
+                    Submit
+                </button>
+            </form>
         </div>
     </div>
 );
 
-export default App;
+export default reduxForm({
+    form: "simple", // a unique identifier for this form
+    onSubmit: data => console.log(data)
+})(App);
